@@ -6,6 +6,7 @@ using Ohana3DS_Rebirth.GUI;
 using Ohana3DS_Rebirth.Ohana;
 using Ohana3DS_Rebirth.Properties;
 using Ohana3DS_Rebirth.Tools;
+using System.Text.RegularExpressions;
 
 namespace Ohana3DS_Rebirth
 {
@@ -118,10 +119,12 @@ namespace Ohana3DS_Rebirth
                         MessageBoxIcon.Exclamation);
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                MessageBox.Show("Unsupported file format!", "Error", MessageBoxButtons.OK,
-                    MessageBoxIcon.Exclamation);
+                MessageBox.Show("An error occured while reading this File!\n\n" + e.Message + "\n"
+                    + Regex.Replace(e.StackTrace, @" in .*\:line", " at line").Replace("Ohana3DS_Rebirth.", ""), "Error", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                
 
                 if (currentPanel != null)
                 {
