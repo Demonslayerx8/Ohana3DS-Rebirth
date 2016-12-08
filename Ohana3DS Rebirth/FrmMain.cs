@@ -124,7 +124,6 @@ namespace Ohana3DS_Rebirth
                 MessageBox.Show("An error occured while reading this File!\n\n" + e.Message + "\n"
                     + Regex.Replace(e.StackTrace, @" in .*\:line", " at line").Replace("Ohana3DS_Rebirth.", ""), "Error", 
                     MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                
 
                 if (currentPanel != null)
                 {
