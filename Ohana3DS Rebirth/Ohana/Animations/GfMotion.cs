@@ -58,7 +58,7 @@ namespace Ohana3DS_Rebirth.Ohana.Animations
 
             data.Seek(boneNamesStart + boneNamesLength, SeekOrigin.Begin);
 
-            byte bbone = 0;
+            ushort bbone = 0;
 
             for (int b = 0; b < boneNames.Length; b++)
             {
@@ -83,9 +83,18 @@ namespace Ohana3DS_Rebirth.Ohana.Animations
 
                     uint keyFramesCount = input.ReadUInt32();
 
-                    byte[] keyFrames = new byte[keyFramesCount];
+                    ushort[] keyFrames = new ushort[keyFramesCount];
 
-                    for (int n = 0; n < keyFramesCount; n++) { keyFrames[n] = input.ReadByte(); if (keyFrames[n] > bbone) bbone = keyFrames[n]; }
+                    // sometime the keyframe size exceede 1 byte and shorts are needed
+                    ushort p = input.ReadUInt16();
+                    data.Seek(-2, SeekOrigin.Current);
+                    bool singleByte =  (p & 0xff00) > 0;
+
+                    for (int n = 0; n < keyFramesCount; n++)
+                    {
+                        keyFrames[n] = singleByte ? input.ReadByte() : input.ReadUInt16();
+                        if (keyFrames[n] > bbone) bbone = keyFrames[n];
+                    }
                     while ((data.Position & 3) != 0) input.ReadByte();
 
                     float valueScale = input.ReadSingle();
@@ -143,9 +152,9 @@ namespace Ohana3DS_Rebirth.Ohana.Animations
         private static void addFrame(
             RenderBase.OSkeletalAnimationBone bone,
             bool mul2,
-            int axis, 
-            float val, 
-            float frame = 0, 
+            int axis,
+            float val,
+            float frame = 0,
             float slope = 0)
         {
             RenderBase.OAnimationKeyFrame frm = new RenderBase.OAnimationKeyFrame();
